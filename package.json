@@ -1,0 +1,15 @@
+{
+  "name": "backchannel",
+  "version": "1.0.0",
+  "description": "anonymous chat for your zoom meetings",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "@vegetabill",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
