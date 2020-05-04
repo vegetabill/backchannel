@@ -1,4 +1,4 @@
-import shortId from "shortid";
+import * as shortId from "shortid";
 import * as Chance from "chance";
 import { User } from "./types";
 

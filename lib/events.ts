@@ -1,5 +1,5 @@
 import { User, Action, ProtocolMessage } from "./types";
-import shortId from "shortid";
+import * as shortId from "shortid";
 
 export function buildMessage(actor: User, action: Action): ProtocolMessage {
   return {
