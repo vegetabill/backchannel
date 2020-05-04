@@ -4,9 +4,13 @@ import "./index.css";
 import "bootstrap/dist/css/bootstrap.css";
 import App from "./App";
 
+const websocketEndpoint =
+  process.env.REACT_APP_WS_ENDPOINT || "ws://localhost:3001";
+const ws = new WebSocket(websocketEndpoint);
+
 ReactDOM.render(
   <React.StrictMode>
-    <App socket={window.io()} />
+    <App ws={ws} />
   </React.StrictMode>,
   document.getElementById("root")
 );

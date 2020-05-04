@@ -5,12 +5,22 @@ import Activity from "./messages/Activity";
 
 const componentsForEventType = new Map([["activity", Activity]]);
 
-function App({ socket }) {
+function App({ ws }) {
   const [events, setEvents] = useState([]);
+  const [connectionState, setConnectionState] = useState("CLOSED");
 
-  socket.on("activity", (event) =>
-    setEvents([...events, { name: "activity", ...event }])
-  );
+  ws.addEventListener("open", () => {
+    console.log("connected");
+    setConnectionState("OPEN");
+  });
+
+  ws.addEventListener("close", () => {
+    setConnectionState("CLOSED");
+  });
+
+  ws.addEventListener("message", (msg) => {
+    console.log("msg => ", msg);
+  });
 
   const children = events.map((event) => {
     console.log(event);
