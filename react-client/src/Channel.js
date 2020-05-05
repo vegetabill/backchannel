@@ -1,49 +1,33 @@
+import Actions from "./actions";
+
 export function connectToChannel(name, endpoint) {
   const ws = new WebSocket(endpoint);
-  let connectionState = "CLOSED";
-  let stateListener = () => null;
-  let channelStatusListener = () => null;
-  let actionListener = () => null;
+  let dispatch = () => false;
 
-  const onConnectionStateChange = (handler) => {
-    stateListener = handler;
-  };
-
-  const setConnectionState = (value) => {
-    connectionState = value;
-    stateListener(connectionState);
+  const useDispatcher = (dispatchFunc) => {
+    dispatch = dispatchFunc;
   };
 
   ws.addEventListener("open", () => {
-    setConnectionState("CONNECTED");
+    console.log(`connected to channel ${name}`);
   });
 
   ws.addEventListener("close", () => {
-    setConnectionState("CLOSED");
+    console.log(`disconnected to channel ${name}`);
   });
-
-  const onChannelStatusUpdate = (listener) => {
-    channelStatusListener = listener;
-  };
-
-  const onAction = (listener) => {
-    actionListener = listener;
-  };
 
   ws.addEventListener("message", ({ data }) => {
     const msg = JSON.parse(data);
-    console.log("msg => ", msg);
+    console.debug(`channel[${name}] received: `, msg);
     if (msg.type === "SYSTEM" && msg.payload.category === "CHANNEL_STATUS") {
       const payload = msg.payload.data;
-      channelStatusListener(payload);
+      dispatch({ name: Actions.CHANNEL_JOINED, payload });
     } else {
-      actionListener(msg);
+      dispatch({ name: Actions.ACTION_RECEIVED, payload: msg });
     }
   });
 
   return {
-    onConnectionStateChange,
-    onChannelStatusUpdate,
-    onAction,
+    useDispatcher,
   };
 }

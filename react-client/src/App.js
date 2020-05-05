@@ -1,41 +1,50 @@
-import React, { useState, useEffect } from "react";
+import React, { useReducer, useEffect } from "react";
+import reducer from "./reducers";
 import { Container } from "reactstrap";
 import "./App.css";
 import Activity from "./messages/Activity";
-import { connectToChannel } from "./Channel";
-// import { MessageType, CategorySystem, ProtocolMessage } from "./server-types";
+import { connectToChannel } from "./channel";
 
-const componentsForEventType = new Map([["ACTION", Activity]]);
+const componentsForActionType = new Map([["ACTION", Activity]]);
+
+const initialState = {
+  actions: [],
+  channel: null,
+};
 
 function App() {
-  const [events, setEvents] = useState([]);
-  const [channel, setChannel] = useState();
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    const channel = connectToChannel(
+    connectToChannel(
       "root",
       process.env.REACT_APP_WS_ENDPOINT || "ws://localhost:3001"
-    );
-    channel.onChannelStatusUpdate(setChannel);
-    channel.onAction((action) => {
-      setEvents([...events, action]);
-    });
+    ).useDispatcher(dispatch);
   }, []);
 
-  const children = events.map((event) => {
-    console.log(event);
-    const Comp = componentsForEventType.get(event.type);
-    return <Comp key={event.id} {...event.payload} />;
+  const { actions, channel } = state;
+
+  const children = actions.map((action) => {
+    const Comp = componentsForActionType.get(action.type);
+    return <Comp key={action.id} {...action.payload} />;
   });
+
+  const subheading = () => {
+    if (channel) {
+      if (channel.members.length === 1) {
+        return "You're alone in the channel. 😭";
+      } else {
+        return `${
+          channel.members.length - 1
+        } conspirators also in the channel.`;
+      }
+    }
+  };
 
   return (
     <main>
       <h1>{channel ? channel.alias : "Not Yet Connected"}</h1>
-      <h2>
-        {channel
-          ? `Joined along with ${channel.members.length} others.`
-          : "Waiting for channel info."}
-      </h2>
+      <h2>{subheading()}</h2>
       <Container>{children}</Container>
     </main>
   );
