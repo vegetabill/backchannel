@@ -10,10 +10,10 @@ const Left = ({ actor }) => {
 };
 
 function Activity({ action, actor }) {
-  if (action === "user.joined") {
+  if (action === "JOIN_CHANNEL") {
     return <Joined actor={actor} />;
   }
-  if (action === "user.left") {
+  if (action === "LEFT_CHANNEL") {
     return <Left actor={actor} />;
   }
 }
