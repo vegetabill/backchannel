@@ -5,56 +5,49 @@ import * as WebSocket from "ws";
 
 // 1p
 import logger from "./lib/logger";
-import { buildAction, buildSystemMessage } from "./lib/events";
+import { buildMessage } from "./lib/protocol-message";
 import { generateUser } from "./lib/user";
-import { createRoom } from "./lib/rooms";
+import { createChannel } from "./lib/channel";
 import {
-  ProtocolMessage,
+  Channel,
   User,
-  Action,
-  CategorySystem,
-  Room,
-} from "./lib/types";
+  MessageCategory,
+  ProtocolMessage,
+} from "backchannel-common";
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const rooms = new Map<string, Room>();
-const rootRoom = createRoom("root");
+const rooms = new Map<string, Channel>();
+const rootRoom = createChannel("root");
 rooms.set(rootRoom.id, rootRoom);
 
 wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
   const room = rooms.get(rootRoom.id);
-  const { members } = room;
+  const { connections } = room;
   const user = generateUser();
   logger.debug(`${user.name} connecting...`);
-  members.set(user, ws);
+  connections.set(user, ws);
   logger.debug(`${user.name} joined from ${request.socket.remoteAddress}`);
 
   const sendToAllOthers = (user: User, message: ProtocolMessage): void => {
-    members.forEach((client, member) => {
+    connections.forEach((client, member) => {
       if (member !== user) {
         client.send(JSON.stringify(message));
       }
     });
   };
 
-  ws.send(
-    JSON.stringify(
-      buildSystemMessage(CategorySystem.ChannelStatus, {
-        members: [...members.keys()],
-        createdAt: room.createdAt,
-        nickname: room.nickname,
-        alias: user.name,
-      })
-    )
-  );
-  sendToAllOthers(user, buildAction(user, Action.JoinedChannel));
+  [...connections.keys()].forEach((u) => {
+    ws.send(JSON.stringify(buildMessage(MessageCategory.JoinedChannel, u)));
+  });
+
+  sendToAllOthers(user, buildMessage(MessageCategory.JoinedChannel, user));
   ws.on("close", () => {
     logger.debug(`${user.name} left channel.`);
-    members.delete(user);
-    sendToAllOthers(user, buildAction(user, Action.LeftChannel));
+    connections.delete(user);
+    sendToAllOthers(user, buildMessage(MessageCategory.LeftChannel, user));
   });
 });
 

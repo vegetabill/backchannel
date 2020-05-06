@@ -2,14 +2,12 @@ import React, { useReducer, useEffect } from "react";
 import reducer from "./reducers";
 import { Container } from "reactstrap";
 import "./App.css";
-import Activity from "./messages/Activity";
+import Message from "./messages";
 import { connectToChannel } from "./channel";
 
-const componentsForActionType = new Map([["ACTION", Activity]]);
-
 const initialState = {
-  actions: [],
-  channel: null,
+  messages: [],
+  members: [],
 };
 
 function App() {
@@ -22,30 +20,27 @@ function App() {
     ).useDispatcher(dispatch);
   }, []);
 
-  const { actions, channel } = state;
-
-  const children = actions.map((action) => {
-    const Comp = componentsForActionType.get(action.type);
-    return <Comp key={action.id} {...action.payload} />;
-  });
+  const { messages, members } = state;
 
   const subheading = () => {
-    if (channel) {
-      if (channel.members.length === 1) {
+    if (members) {
+      if (members.length === 1) {
         return "You're alone in the channel. 😭";
       } else {
-        return `${
-          channel.members.length - 1
-        } conspirators also in the channel.`;
+        return `${members.length - 1} conspirators also in the channel.`;
       }
     }
   };
 
   return (
     <main>
-      <h1>{channel ? channel.alias : "Not Yet Connected"}</h1>
+      <h1>{messages && messages.length ? null : "Not Yet Connected"}</h1>
       <h2>{subheading()}</h2>
-      <Container>{children}</Container>
+      <Container>
+        {messages.map((msg) => (
+          <Message message={msg} />
+        ))}
+      </Container>
     </main>
   );
 }

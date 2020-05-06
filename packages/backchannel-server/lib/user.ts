@@ -1,6 +1,6 @@
 import * as shortId from "shortid";
 import * as Chance from "chance";
-import { User } from "./types";
+import { User } from "backchannel-common";
 
 const chance = new Chance();
 

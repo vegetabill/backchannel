@@ -1,4 +1,4 @@
-import Actions from "./actions";
+import { actionFromMessage } from "./actions";
 
 export function connectToChannel(name, endpoint) {
   const ws = new WebSocket(endpoint);
@@ -19,12 +19,8 @@ export function connectToChannel(name, endpoint) {
   ws.addEventListener("message", ({ data }) => {
     const msg = JSON.parse(data);
     console.debug(`channel[${name}] received: `, msg);
-    if (msg.type === "SYSTEM" && msg.payload.category === "CHANNEL_STATUS") {
-      const payload = msg.payload.data;
-      dispatch({ name: Actions.CHANNEL_JOINED, payload });
-    } else {
-      dispatch({ name: Actions.ACTION_RECEIVED, payload: msg });
-    }
+    const action = actionFromMessage(msg);
+    dispatch(action);
   });
 
   return {

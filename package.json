@@ -1,45 +1,9 @@
 {
   "name": "backchannel",
-  "version": "1.0.0",
-  "description": "meme the absolute s**t out of your zoom meetings",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node -r ts-node/register index.ts",
-    "dev": "VERBOSE=true nodemon",
-    "build": "tsc"
-  },
-  "author": "@vegetabill",
   "license": "MIT",
-  "dependencies": {
-    "bufferutil": "^4.0.1",
-    "chalk": "^4.0.0",
-    "chance": "^1.1.4",
-    "express": "^4.17.1",
-    "react-avataaars": "^0.2.3",
-    "shortid": "^2.2.15",
-    "utf-8-validate": "^5.0.2",
-    "winston": "^3.2.1",
-    "ws": "^7.2.5"
-  },
+  "author": "@vegetabill",
+  "description": "meme the absolute s**t out of your zoom meetings",
   "devDependencies": {
-    "@types/express": "^4.17.6",
-    "@types/node": "^13.13.4",
-    "@types/ws": "^7.2.4",
-    "nodemon": "^2.0.3",
-    "ts-node": "^8.10.1",
-    "typescript": "^3.8.3"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      ".git",
-      "node_modules"
-    ],
-    "watch": [
-      "lib",
-      "index.ts"
-    ],
-    "exec": "npm start",
-    "ext": "ts"
+    "lerna": "^3.20.2"
   }
 }
