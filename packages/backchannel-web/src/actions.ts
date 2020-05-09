@@ -3,11 +3,14 @@ import { MessageCategory, ProtocolMessage } from "backchannel-common";
 /**
  * For React app-only actions
  */
-export enum ActionType {}
+export enum ActionType {
+  SentChat = "SENT_CHAT",
+  ChannelConnected = "CHANNEL_CONNECTED",
+}
 
 export interface AppAction {
   type: ActionType;
-  payload?: Map<string, string>;
+  payload: string;
 }
 
 export interface RemoteAction {

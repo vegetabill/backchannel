@@ -18,6 +18,7 @@ export enum MessageCategory {
   ChannelClosed = "CHANNEL_CLOSED",
   SystemError = "SYSTEM_ERROR",
   JoinedChannel = "JOIN_CHANNEL",
+  IdentityGranted = "IDENTITY_GRANTED",
   LeftChannel = "LEFT_CHANNEL",
   SentChat = "SENT_CHAT",
   WentIdle = "WENT_IDLE",

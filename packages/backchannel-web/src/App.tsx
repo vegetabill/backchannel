@@ -1,26 +1,33 @@
-import React, { useReducer, useEffect } from "react";
-import reducer from "./reducers";
+import React, { useReducer, useEffect, createContext } from "react";
+import reducer, { registerChannel } from "./reducers";
 import { Container } from "reactstrap";
 import "./App.css";
 import Message from "./messages";
+import ChatEditor from "./ChatEditor";
 import { connectToChannel } from "./channel";
+import { Provider } from "./Context";
+import Avatar from "./Avatar";
+import { Spinner } from "reactstrap";
 
 const initialState = {
   messages: [],
   members: [],
+  user: { name: "", id: "" },
 };
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    connectToChannel(
+    const channel = connectToChannel(
       "root",
       process.env.REACT_APP_WS_ENDPOINT || "ws://localhost:3001"
-    ).useDispatcher(dispatch);
+    );
+    channel.useDispatcher(dispatch);
+    registerChannel(channel);
   }, []);
 
-  const { messages, members } = state;
+  const { messages, members, user } = state;
 
   const subheading = () => {
     if (members) {
@@ -33,15 +40,20 @@ function App() {
   };
 
   return (
-    <main>
-      <h1>{messages && messages.length ? null : "Not Yet Connected"}</h1>
-      <h2>{subheading()}</h2>
-      <Container>
-        {messages.map((msg) => (
-          <Message message={msg} />
-        ))}
-      </Container>
-    </main>
+    <Provider value={{ state, dispatch }}>
+      <main>
+        <h2>
+          {user.name ? <Avatar user={user} /> : <Spinner color="info" />}
+          {subheading()}
+        </h2>
+        <Container>
+          {messages.map((msg) => (
+            <Message message={msg} />
+          ))}
+        </Container>
+        <ChatEditor />
+      </main>
+    </Provider>
   );
 }
 

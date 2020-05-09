@@ -1,16 +1,32 @@
-import { AppAction, RemoteAction } from "../actions";
+import { AppAction, RemoteAction, ActionType } from "../actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
 import { without } from "lodash";
+import shortId from "shortid";
 
 export interface AppState {
   members: Array<User>;
   messages: Array<ProtocolMessage>;
+  user: User;
 }
 
 function isRemoteAction(
   action: AppAction | RemoteAction
 ): action is RemoteAction {
   return (action as RemoteAction).category !== undefined;
+}
+
+function isAppAction(action: AppAction | RemoteAction): action is AppAction {
+  return (action as AppAction).type !== undefined;
+}
+
+let activeChannel = {
+  send(msg: ProtocolMessage) {
+    console.warn("Tried to send message before connected", msg);
+  },
+};
+
+export function registerChannel(channel: any) {
+  activeChannel = channel;
 }
 
 export default function reduce(
@@ -22,6 +38,16 @@ export default function reduce(
     const { category, message } = action;
     const messages = [...state.messages, message];
     switch (category) {
+      case MessageCategory.SentChat:
+        return {
+          ...state,
+          messages: messages.concat(message),
+        };
+      case MessageCategory.IdentityGranted:
+        return {
+          ...state,
+          user: message.actor,
+        };
       case MessageCategory.JoinedChannel:
         return {
           ...state,
@@ -35,7 +61,21 @@ export default function reduce(
           members: without(state.members, message.actor),
         };
       default:
-        return state;
+        break;
+    }
+  } else if (isAppAction(action)) {
+    const { type, payload } = action;
+    switch (type) {
+      case ActionType.SentChat:
+        activeChannel.send({
+          id: shortId.generate(),
+          category: MessageCategory.SentChat,
+          actor: state.user,
+          payload,
+          timestamp: new Date(),
+        });
+      default:
+        break;
     }
   }
   return state;

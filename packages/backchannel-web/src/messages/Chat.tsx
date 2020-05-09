@@ -2,8 +2,13 @@ import React from "react";
 import { Row, Media, Badge } from "reactstrap";
 import Avatar from "../Avatar";
 import strftime from "strftime";
+import { User } from "backchannel-common";
 
-const Chat = ({ sender, body, sentAt }) => {
+const Chat: React.FunctionComponent<{
+  sender: User,
+  body: string,
+  sentAt: Date,
+}> = ({ sender, body, sentAt }) => {
   return (
     <Row>
       <Media>

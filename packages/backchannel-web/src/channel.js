@@ -23,7 +23,12 @@ export function connectToChannel(name, endpoint) {
     dispatch(action);
   });
 
+  function send(msg) {
+    ws.send(JSON.stringify(msg));
+  }
+
   return {
     useDispatcher,
+    send,
   };
 }
