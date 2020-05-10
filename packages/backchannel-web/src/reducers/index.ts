@@ -41,7 +41,7 @@ export default function reduce(
       case MessageCategory.SentChat:
         return {
           ...state,
-          messages: messages.concat(message),
+          messages,
         };
       case MessageCategory.IdentityGranted:
         return {

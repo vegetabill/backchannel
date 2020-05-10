@@ -5,14 +5,6 @@ export interface User {
   name: string;
 }
 
-export interface Channel {
-  id: string;
-  name?: string;
-  createdAt: Date;
-  expirationDate: Date;
-  connections: Map<User, WebSocket>;
-}
-
 export enum MessageCategory {
   ChannelExpirationWarning = "CHANNEL_EXPIRATION_WARNING",
   ChannelClosed = "CHANNEL_CLOSED",

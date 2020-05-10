@@ -1,7 +1,15 @@
 import React from "react";
 import { Alert } from "reactstrap";
 import Chat from "./Chat";
-import { ProtocolMessage, MessageCategory } from "backchannel-common";
+import { ProtocolMessage, MessageCategory, User } from "backchannel-common";
+
+export interface Channel {
+  id: string;
+  name?: string;
+  createdAt: Date;
+  expirationDate: Date;
+  connections: Map<User, WebSocket>;
+}
 
 const Activity: React.FunctionComponent<{
   message: ProtocolMessage;
