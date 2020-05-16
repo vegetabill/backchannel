@@ -1,12 +1,12 @@
 import { AppAction, RemoteAction, ActionType } from "../actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
-import { without } from "lodash";
 import shortId from "shortid";
 
 export interface AppState {
   members: Array<User>;
   messages: Array<ProtocolMessage>;
   user: User;
+  outbox: Array<ProtocolMessage>;
 }
 
 function isRemoteAction(
@@ -39,8 +39,14 @@ export default function reduce(
     const messages = [...state.messages, message];
     switch (category) {
       case MessageCategory.SentChat:
+        let outbox = state.outbox;
+        let idx = state.outbox.findIndex((outMsg) => outMsg.id === message.id);
+        if (idx >= 0) {
+          outbox = outbox.slice(0, idx).concat(outbox.slice(idx + 1));
+        }
         return {
           ...state,
+          outbox,
           messages,
         };
       case MessageCategory.IdentityGranted:
@@ -55,10 +61,13 @@ export default function reduce(
           members: state.members.concat(message.actor),
         };
       case MessageCategory.LeftChannel:
+        const remainingMembers = state.members.filter(
+          (member) => member.id !== message.actor.id
+        );
         return {
           ...state,
           messages,
-          members: without(state.members, message.actor),
+          members: remainingMembers,
         };
       default:
         break;
@@ -67,13 +76,18 @@ export default function reduce(
     const { type, payload } = action;
     switch (type) {
       case ActionType.SentChat:
-        activeChannel.send({
+        const protoMsg = {
           id: shortId.generate(),
           category: MessageCategory.SentChat,
           actor: state.user,
           payload,
           timestamp: new Date(),
-        });
+        };
+        activeChannel.send(protoMsg);
+        return {
+          ...state,
+          outbox: state.outbox.concat(protoMsg),
+        };
       default:
         break;
     }

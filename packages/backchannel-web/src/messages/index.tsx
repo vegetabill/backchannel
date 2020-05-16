@@ -13,7 +13,8 @@ export interface Channel {
 
 const Activity: React.FunctionComponent<{
   message: ProtocolMessage;
-}> = ({ message }) => {
+  draft: boolean;
+}> = ({ message, draft }) => {
   const { category, actor, timestamp, payload } = message;
   switch (category) {
     case MessageCategory.JoinedChannel:
@@ -21,7 +22,9 @@ const Activity: React.FunctionComponent<{
     case MessageCategory.LeftChannel:
       return <Alert color="warning">{actor.name} left.</Alert>;
     case MessageCategory.SentChat:
-      return <Chat sender={actor} body={payload} sentAt={timestamp} />;
+      return (
+        <Chat sender={actor} body={payload} draft={draft} sentAt={timestamp} />
+      );
     default:
       return (
         <Alert color="error">

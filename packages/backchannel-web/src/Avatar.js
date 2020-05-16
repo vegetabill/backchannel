@@ -2,9 +2,9 @@ import React from "react";
 import { Avatar as Avataaar } from "react-avataaars";
 
 const options = {
-  clothes: "sweater",
-  eyebrow: "angry",
-  style: "circle",
+  // clothes: "sweater",
+  // eyebrow: "angry",
+  // style: "circle",
 };
 
 const Avatar = ({ user }) => {

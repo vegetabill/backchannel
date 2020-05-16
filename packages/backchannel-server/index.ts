@@ -20,24 +20,20 @@ channels.set(rootChannel.id, rootChannel);
 
 wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
   const shouldBroadcast = (msg: ProtocolMessage): boolean => true;
-  const sendObj = (obj) => {
-    ws.send(JSON.stringify(obj));
-  };
   const channel = channels.get(rootChannel.id);
-  const { connections } = channel;
   const user = generateUser();
-  logger.debug(`${user.name} connecting...`);
-  connections.set(user, ws);
   const { socket } = request;
   logger.info(
     `${user.name} joined from ${socket.remoteAddress}/${socket.remotePort}`
   );
-  sendObj(buildMessage(MessageCategory.IdentityGranted, user));
+  channel.register(user, ws);
 
-  [...connections.keys()].forEach((u) => {
-    sendObj(buildMessage(MessageCategory.JoinedChannel, u));
+  channel.sendToUser(user, buildMessage(MessageCategory.IdentityGranted, user));
+
+  channel.getMembers().forEach((u) => {
+    channel.sendToUser(user, buildMessage(MessageCategory.JoinedChannel, u));
   });
-  channel.history.forEach((msg) => sendObj(msg));
+  channel.history.forEach((msg) => channel.sendToUser(user, msg));
 
   ws.onmessage = (event: WebSocket.MessageEvent): void => {
     const data = event.data as string;
@@ -50,8 +46,7 @@ wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
 
   channel.broadcast(buildMessage(MessageCategory.JoinedChannel, user));
   ws.on("close", () => {
-    logger.debug(`${user.name} left channel.`);
-    connections.delete(user);
+    channel.unregister(user);
     channel.broadcast(buildMessage(MessageCategory.LeftChannel, user));
   });
 });

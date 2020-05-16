@@ -12,6 +12,7 @@ import { Spinner } from "reactstrap";
 const initialState = {
   messages: [],
   members: [],
+  outbox: [],
   user: { name: "", id: "" },
 };
 
@@ -27,7 +28,7 @@ function App() {
     registerChannel(channel);
   }, []);
 
-  const { messages, members, user } = state;
+  const { messages, members, user, outbox } = state;
 
   const subheading = () => {
     if (members) {
@@ -48,7 +49,10 @@ function App() {
         </h2>
         <Container>
           {messages.map((msg) => (
-            <Message message={msg} />
+            <Message key={msg.id} draft={false} message={msg} />
+          ))}
+          {outbox.map((msg) => (
+            <Message key={msg.id} draft={true} message={msg} />
           ))}
         </Container>
         <ChatEditor />
