@@ -1,4 +1,4 @@
-import { actionFromMessage } from "./actions";
+import { actionFromMessage } from "./Actions";
 
 export function connectToChannel(name, endpoint) {
   const ws = new WebSocket(endpoint);

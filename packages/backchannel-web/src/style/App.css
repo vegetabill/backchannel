@@ -1,0 +1,64 @@
+.outgoingMessage {
+  color: gray;
+}
+
+.avatar--large {
+  background-color: #fff;
+  border-radius: 75px;
+  border: 3px solid #000;
+  height: 75px;
+  max-height: 75px;
+  max-width: 75px;
+  width: 75px;
+}
+
+.avatar--small {
+  border-radius: 40px;
+  max-height: 40px;
+  max-width: 40px;
+  background-color: #000;
+  border-radius: 50px;
+  border: 2px solid #fff;
+}
+
+.chatEditor {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #ddd;
+  padding: 1em 2em;
+}
+
+.chatEditor__button {
+  margin-top: 1em;
+}
+
+.media {
+  margin: 1em 0;
+}
+
+.media-left {
+  margin-right: 0.5em;
+}
+
+.media-heading {
+  font-size: medium;
+  color: #b9ff66;
+  border-bottom: 1px solid #b9ff66;
+}
+
+.media-body__text {
+  padding: 0.5em 1em;
+  width: 100%;
+  color: #fff;
+}
+
+.chatTimestamp {
+  color: #b9ff66;
+  border: 2px solid #b9ff66;
+  background-color: transparent;
+  border-radius: 0.5em;
+  margin-left: 1em;
+  padding: 0.25em;
+  font-size: small;
+}

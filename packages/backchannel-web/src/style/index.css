@@ -1,0 +1,25 @@
+/* https://colors.lol/viscid */
+main {
+  background-color: #5b7c99;
+}
+header {
+  padding: 0.5em;
+  background-color: #c071fe;
+}
+footer {
+  background-color: #b9ff66;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+header,
+footer {
+  font-family: "Josefin Sans", sans-serif;
+}
+
+p {
+  font-family: "Noto Serif", serif;
+}

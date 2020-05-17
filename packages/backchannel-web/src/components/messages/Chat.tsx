@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Media, Badge, Spinner } from "reactstrap";
+import { Row, Media, Spinner } from "reactstrap";
 import Avatar from "../Avatar";
 import strftime from "strftime";
 import { User } from "backchannel-common";
@@ -19,11 +19,11 @@ const Chat: React.FunctionComponent<{
         <Media body className={draft ? "outgoingMessage" : undefined}>
           <Media heading>
             {sender.name}{" "}
-            <Badge color="secondary">
+            <span className="chatTimestamp" color="secondary">
               {draft ? "sending..." : strftime("%H:%M:%S", new Date(sentAt))}
-            </Badge>
+            </span>
           </Media>
-          {body}
+          <p className="media-body__text">{body}</p>
         </Media>
       </Media>
     </Row>

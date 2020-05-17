@@ -1,13 +1,12 @@
-import React, { useReducer, useEffect, createContext } from "react";
-import reducer, { registerChannel } from "./reducers";
+import React, { useReducer, useEffect } from "react";
+import reducer, { registerChannel } from "./state/Reducer";
 import { Container } from "reactstrap";
-import "./App.css";
-import Message from "./messages";
-import ChatEditor from "./ChatEditor";
-import { connectToChannel } from "./channel";
-import { Provider } from "./Context";
-import Avatar from "./Avatar";
-import { Spinner } from "reactstrap";
+import "./style/App.css";
+import Message from "./components/messages";
+import ChatEditor from "./components/ChatEditor";
+import { connectToChannel } from "./model/Channel";
+import { Provider } from "./state/Context";
+import Header from "./components/Header";
 
 const initialState = {
   messages: [],
@@ -30,23 +29,10 @@ function App() {
 
   const { messages, members, user, outbox } = state;
 
-  const subheading = () => {
-    if (members) {
-      if (members.length === 1) {
-        return "You're alone in the channel. 😭";
-      } else {
-        return `${members.length - 1} conspirators also in the channel.`;
-      }
-    }
-  };
-
   return (
     <Provider value={{ state, dispatch }}>
+      <Header user={user} members={members} room="root" />
       <main>
-        <h2>
-          {user.name ? <Avatar user={user} /> : <Spinner color="info" />}
-          {subheading()}
-        </h2>
         <Container>
           {messages.map((msg) => (
             <Message key={msg.id} draft={false} message={msg} />
@@ -57,6 +43,7 @@ function App() {
         </Container>
         <ChatEditor />
       </main>
+      <footer>backchannel</footer>
     </Provider>
   );
 }

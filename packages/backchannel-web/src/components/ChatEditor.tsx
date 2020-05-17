@@ -1,7 +1,7 @@
 import React, { useState, useContext, ChangeEvent, FormEvent } from "react";
-import AppContext from "./Context";
+import AppContext from "../state/Context";
 import { Button, Form, FormGroup, Input } from "reactstrap";
-import { ActionType } from "./actions";
+import { ActionType } from "../model/Actions";
 
 const ChatEditor = () => {
   const [draft, setDraft] = useState("");
@@ -16,7 +16,7 @@ const ChatEditor = () => {
     setDraft("");
   };
   return (
-    <Form onSubmit={onSubmit}>
+    <Form className="chatEditor" onSubmit={onSubmit}>
       <FormGroup>
         <Input
           type="text"
@@ -25,7 +25,9 @@ const ChatEditor = () => {
           onChange={textChanged}
           value={draft}
         />
-        <Button color="primary">Send</Button>
+        <Button className="chatEditor__button" color="primary">
+          Send
+        </Button>
       </FormGroup>
     </Form>
   );

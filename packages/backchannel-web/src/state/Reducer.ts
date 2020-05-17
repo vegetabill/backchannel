@@ -1,4 +1,4 @@
-import { AppAction, RemoteAction, ActionType } from "../actions";
+import { AppAction, RemoteAction, ActionType } from "../model/Actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
 import shortId from "shortid";
 
