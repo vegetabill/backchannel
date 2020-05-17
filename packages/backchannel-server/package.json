@@ -14,7 +14,6 @@
     "backchannel-common": "^1.0.1",
     "bufferutil": "^4.0.1",
     "chalk": "^4.0.0",
-    "chance": "^1.1.4",
     "express": "^4.17.1",
     "shortid": "^2.2.15",
     "utf-8-validate": "^5.0.2",
