@@ -1,15 +1,8 @@
 import React from "react";
 import { Alert } from "reactstrap";
 import Chat from "./Chat";
-import { ProtocolMessage, MessageCategory, User } from "backchannel-common";
-
-export interface Channel {
-  id: string;
-  name?: string;
-  createdAt: Date;
-  expirationDate: Date;
-  connections: Map<User, WebSocket>;
-}
+import MembershipChange, { ChangeType } from "./MembershipChange";
+import { ProtocolMessage, MessageCategory } from "backchannel-common";
 
 const Activity: React.FunctionComponent<{
   message: ProtocolMessage;
@@ -18,9 +11,9 @@ const Activity: React.FunctionComponent<{
   const { category, actor, timestamp, payload } = message;
   switch (category) {
     case MessageCategory.JoinedChannel:
-      return <Alert color="success">{actor.name} has joined.</Alert>;
+      return <MembershipChange members={[actor]} type={ChangeType.Join} />;
     case MessageCategory.LeftChannel:
-      return <Alert color="warning">{actor.name} left.</Alert>;
+      return <MembershipChange members={[actor]} type={ChangeType.Left} />;
     case MessageCategory.SentChat:
       return (
         <Chat sender={actor} body={payload} draft={draft} sentAt={timestamp} />

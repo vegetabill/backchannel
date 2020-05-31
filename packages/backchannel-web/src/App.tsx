@@ -2,7 +2,7 @@ import React, { useReducer, useEffect } from "react";
 import reducer, { registerChannel } from "./state/Reducer";
 import { Container } from "reactstrap";
 import "./style/App.css";
-import Message from "./components/messages";
+import AnyMessage from "./components/messages/AnyMessage";
 import ChatEditor from "./components/ChatEditor";
 import { connectToChannel } from "./model/Channel";
 import { Provider } from "./state/Context";
@@ -15,12 +15,14 @@ const initialState = {
   user: { name: "", id: "" },
 };
 
+const channelName = "root";
+
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     const channel = connectToChannel(
-      "root",
+      channelName,
       process.env.REACT_APP_WS_ENDPOINT || "ws://localhost:3001"
     );
     channel.useDispatcher(dispatch);
@@ -31,14 +33,14 @@ function App() {
 
   return (
     <Provider value={{ state, dispatch }}>
-      <Header user={user} members={members} room="root" />
+      <Header user={user} members={members} room={channelName} />
       <main>
         <Container>
           {messages.map((msg) => (
-            <Message key={msg.id} draft={false} message={msg} />
+            <AnyMessage key={msg.id} draft={false} message={msg} />
           ))}
           {outbox.map((msg) => (
-            <Message key={msg.id} draft={true} message={msg} />
+            <AnyMessage key={msg.id} draft={true} message={msg} />
           ))}
         </Container>
         <ChatEditor />

@@ -1,6 +1,7 @@
+import shortId from "shortid";
+import { uniqBy } from "lodash";
 import { AppAction, RemoteAction, ActionType } from "../model/Actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
-import shortId from "shortid";
 
 export interface AppState {
   members: Array<User>;
@@ -55,10 +56,14 @@ export default function reduce(
           user: message.actor,
         };
       case MessageCategory.JoinedChannel:
+        if (state.user && state.user.id === message.actor.id) {
+          return state;
+        }
+        const members = uniqBy(state.members.concat(message.actor), "id");
         return {
           ...state,
           messages,
-          members: state.members.concat(message.actor),
+          members,
         };
       case MessageCategory.LeftChannel:
         const remainingMembers = state.members.filter(

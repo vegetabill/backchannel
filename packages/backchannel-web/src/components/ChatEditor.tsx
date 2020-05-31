@@ -21,6 +21,7 @@ const ChatEditor = () => {
         <Input
           type="text"
           name="message"
+          autoComplete="off"
           placeholder="say something"
           onChange={textChanged}
           value={draft}

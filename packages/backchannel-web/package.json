@@ -4,6 +4,7 @@
   "license": "MIT",
   "author": "@vegetabill",
   "dependencies": {
+    "array-to-sentence": "^2.0.0",
     "backchannel-common": "^1.0.1",
     "bootstrap": "^4.4.1",
     "lodash": "^4.17.15",
