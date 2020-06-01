@@ -23,9 +23,16 @@
 
 .chatEditor {
   position: fixed;
-  bottom: 0;
+  bottom: 3em;
   width: 100%;
   background-color: #ddd;
+  padding: 1em 2em;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
   padding: 1em 2em;
 }
 

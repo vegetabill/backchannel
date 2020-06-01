@@ -7,6 +7,7 @@ import ChatEditor from "./components/ChatEditor";
 import { connectToChannel } from "./model/Channel";
 import { Provider } from "./state/Context";
 import Header from "./components/Header";
+import { groupMessages } from "./util/MessageGrouping";
 
 const initialState = {
   messages: [],
@@ -31,12 +32,14 @@ function App() {
 
   const { messages, members, user, outbox } = state;
 
+  const groupedMessages = groupMessages(messages);
+
   return (
     <Provider value={{ state, dispatch }}>
       <Header user={user} members={members} room={channelName} />
       <main>
         <Container>
-          {messages.map((msg) => (
+          {groupedMessages.map((msg) => (
             <AnyMessage key={msg.id} draft={false} message={msg} />
           ))}
           {outbox.map((msg) => (
@@ -45,7 +48,9 @@ function App() {
         </Container>
         <ChatEditor />
       </main>
-      <footer>backchannel</footer>
+      <footer>
+        <a href="https://github.com/vegetabill/backchannel">backchannel</a>
+      </footer>
     </Provider>
   );
 }

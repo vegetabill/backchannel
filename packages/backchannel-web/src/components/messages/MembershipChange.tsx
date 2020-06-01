@@ -1,6 +1,6 @@
 import React from "react";
 import { User } from "backchannel-common";
-import { toSentence } from "../../util/StringUtils";
+import { sentenceWithVerb } from "../../util/StringUtils";
 
 export enum ChangeType {
   Join = "joined",
@@ -12,9 +12,7 @@ const MembershipChange: React.FunctionComponent<{
   type: ChangeType;
 }> = ({ members, type }) => {
   const names = members.map((m) => m.name);
-  const msg = `${toSentence(names)} ${
-    members.length > 1 ? "have" : "has"
-  } ${type}.`;
+  const msg = `${sentenceWithVerb(names, "has", "have")} ${type}.`;
   return (
     <div className={`membershipChange membershipChange--${type}`}>{msg}</div>
   );

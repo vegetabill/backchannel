@@ -6,10 +6,10 @@ import { User } from "backchannel-common";
 
 const Chat: React.FunctionComponent<{
   sender: User;
-  body: string;
+  lines: Array<string>;
   sentAt: Date;
   draft: boolean;
-}> = ({ sender, body, sentAt, draft }) => {
+}> = ({ sender, lines, sentAt, draft }) => {
   return (
     <Row>
       <Col>
@@ -24,7 +24,14 @@ const Chat: React.FunctionComponent<{
                 {draft ? "sending..." : strftime("%H:%M:%S", new Date(sentAt))}
               </span>
             </Media>
-            <p className="media-body__text">{body}</p>
+            <p className="media-body__text">
+              {lines.map((line) => (
+                <span>
+                  {line}
+                  <br />
+                </span>
+              ))}
+            </p>
           </Media>
         </Media>
       </Col>
