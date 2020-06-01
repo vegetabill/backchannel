@@ -3,7 +3,7 @@ import { Row, Media, Spinner, Col } from "reactstrap";
 import Avatar from "../Avatar";
 import strftime from "strftime";
 import { User } from "backchannel-common";
-
+import ChatBody from "./ChatBody";
 const Chat: React.FunctionComponent<{
   sender: User;
   lines: Array<string>;
@@ -24,14 +24,7 @@ const Chat: React.FunctionComponent<{
                 {draft ? "sending..." : strftime("%H:%M:%S", new Date(sentAt))}
               </span>
             </Media>
-            <p className="media-body__text">
-              {lines.map((line) => (
-                <span>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </p>
+            <ChatBody lines={lines} />
           </Media>
         </Media>
       </Col>

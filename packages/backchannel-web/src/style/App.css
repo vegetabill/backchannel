@@ -60,6 +60,14 @@ footer {
   color: #fff;
 }
 
+.media-body__meme img {
+  max-width: 50%;
+}
+
+.media-body__textLine {
+  display: block;
+}
+
 .chatTimestamp {
   color: #b9ff66;
   border: 2px solid #b9ff66;
