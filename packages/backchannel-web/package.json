@@ -3,9 +3,10 @@
   "version": "1.0.1",
   "license": "MIT",
   "author": "@vegetabill",
+  "description": "React web GUI: anonymous epheremal chat for memeing zoom meetings etc",
   "dependencies": {
     "array-to-sentence": "^2.0.0",
-    "backchannel-common": "^1.0.1",
+    "backchannel-common": "^1.0.2",
     "bootstrap": "^4.4.1",
     "lodash": "^4.17.15",
     "react": "^16.13.1",

@@ -156,11 +156,9 @@ async@^2.6.1:
     lodash "^4.17.14"
 
 backchannel-common@^1.0.2:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/backchannel-common/-/backchannel-common-1.0.1.tgz#3cbea663052dfc86214187c4cc135e6c074e1ed0"
-  integrity sha512-HsGpjNEX74o5WdliJ+2y9TMpz/8XtfyW4g1gs4Z5R310ezcElmJAS1FhyedJyoebQdQAF99rtQBProj53hSryg==
-  dependencies:
-    "@types/ws" "^7.2.4"
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/backchannel-common/-/backchannel-common-1.0.2.tgz#e18880e2aca4e76f039c721a0b306680eeb7994d"
+  integrity sha512-RF9uAd1L8wwksQZ+NeoTBrGxMVqcOKB0D9GDhzhrCa4I3Wlr8H3wn/MNa1fcKQc38vNdpM48PRAbOlChoeaO4Q==
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -267,11 +265,6 @@ chalk@^4.0.0:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
-
-chance@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/chance/-/chance-1.1.4.tgz#d8743bf8e40bb05e024c305ca1ff441195eb23db"
-  integrity sha512-pXPDSu3knKlb6H7ahQfpq//J9mSOxYK8SMtp8MV/nRJh8aLRDIl0ipLH8At8+nVogVwtvPZzyIzY/EbcY/cLuQ==
 
 chokidar@^3.2.2:
   version "3.4.0"

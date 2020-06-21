@@ -1,18 +1,19 @@
 {
   "name": "backchannel-server",
   "version": "1.0.1",
-  "description": "meme the absolute s**t out of your zoom meetings",
+  "description": "anonymous epheremal chat for memeing zoom meetings etc",
   "main": "index.js",
   "scripts": {
-    "start": "node -r ts-node/register index.ts",
+    "dev:start": "node -r ts-node/register index.ts",
     "dev": "VERBOSE=true nodemon --scripts-prepend-node-path",
     "build": "tsc",
-    "serve": "node dist/index.js"
+    "start": "node dist/index.js",
+    "docker": "npm run build && docker build ."
   },
   "author": "@vegetabill",
   "license": "MIT",
   "dependencies": {
-    "backchannel-common": "^1.0.1",
+    "backchannel-common": "^1.0.2",
     "bufferutil": "^4.0.1",
     "chalk": "^4.0.0",
     "express": "^4.17.1",
@@ -42,7 +43,7 @@
       "lib",
       "index.ts"
     ],
-    "exec": "npm start",
+    "exec": "npm run dev:start",
     "ext": "ts"
   }
 }

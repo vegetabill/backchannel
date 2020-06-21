@@ -18,6 +18,12 @@ const channels = new Map<string, Channel>();
 const rootChannel = createChannel("root");
 channels.set(rootChannel.id, rootChannel);
 
+const healthCheck = () => Promise.resolve(true);
+
+app.get("/ping", (res, resp) => {
+  healthCheck().then(() => resp.sendStatus(200));
+});
+
 wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
   const shouldBroadcast = (msg: ProtocolMessage): boolean => true;
   const channel = channels.get(rootChannel.id);

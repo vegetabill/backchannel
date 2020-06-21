@@ -1,7 +1,7 @@
 {
   "name": "backchannel-common",
-  "version": "1.0.1",
-  "description": "",
+  "version": "1.0.2",
+  "description": "typescript type defs for backchannel-server protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -12,9 +12,8 @@
   "author": "@vegetabill",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^3.8.3"
-  },
-  "dependencies": {
+    "typescript": "^3.8.3",
     "@types/ws": "^7.2.4"
-  }
+  },
+  "dependencies": {}
 }
