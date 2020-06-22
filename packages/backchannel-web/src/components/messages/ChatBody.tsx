@@ -1,6 +1,6 @@
 import React from "react";
 
-const GIPHY_REGEX = /\bhttps:\/\/media.giphy.com\/media\/\w+\/source\.gif\b/;
+const GIPHY_REGEX = /\bhttps:\/\/media.giphy.com\/media\/\w+\/giphy\.gif\b/;
 
 export function isMeme(content: string): boolean {
   return GIPHY_REGEX.test(content);

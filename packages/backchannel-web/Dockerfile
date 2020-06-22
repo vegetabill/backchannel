@@ -6,8 +6,10 @@ COPY public ./public
 COPY tsconfig.json ./
 COPY yarn.lock ./
 RUN yarn install
-ENV REACT_APP_WS_ENDPOINT=ws://localhost:8080
+ENV REACT_APP_WS_ENDPOINT=wss://backchannel-server.herokuapp.com
 RUN npm run build
 
 FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
+COPY default.conf.template /etc/nginx/conf.d/default.conf.template
+CMD /bin/sh -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf" && nginx -g 'daemon off;'

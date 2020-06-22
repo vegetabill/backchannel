@@ -1,1 +1,0 @@
-web: cd ./packages/backchannel-server && npm run serve
