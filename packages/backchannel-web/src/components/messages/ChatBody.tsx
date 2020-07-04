@@ -13,7 +13,7 @@ const ChatBody: React.FunctionComponent<{
     <p className="media-body__text">
       {lines.map((line) =>
         isMeme(line) ? (
-          <img src={line} className="media-body__meme" />
+          <img alt="animated gif" src={line} className="media-body__meme" />
         ) : (
           <span className="media-body__textLine">{line}</span>
         )
