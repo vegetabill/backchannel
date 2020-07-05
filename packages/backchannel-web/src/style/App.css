@@ -29,13 +29,6 @@
   padding: 1em 2em;
 }
 
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  padding: 1em 2em;
-}
-
 .chatEditor__button {
   margin-top: 1em;
 }

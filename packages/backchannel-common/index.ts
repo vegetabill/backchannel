@@ -7,6 +7,7 @@ export enum MessageCategory {
   ChannelExpirationWarning = "CHANNEL_EXPIRATION_WARNING",
   ChannelClosed = "CHANNEL_CLOSED",
   SystemError = "SYSTEM_ERROR",
+  ConnectToChannel = "CONNECT_TO_CHANNEL",
   JoinedChannel = "JOIN_CHANNEL",
   IdentityGranted = "IDENTITY_GRANTED",
   LeftChannel = "LEFT_CHANNEL",

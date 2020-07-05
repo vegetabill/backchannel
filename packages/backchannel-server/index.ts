@@ -1,60 +1,70 @@
 // 3p
+import { MessageCategory } from "backchannel-common";
+import * as cors from "cors";
 import * as express from "express";
 import * as http from "http";
 import * as WebSocket from "ws";
-
+import { connectToChannel, createController } from "./lib/channel";
 // 1p
 import logger from "./lib/logger";
-import { buildMessage } from "./lib/protocol-message";
-import { generateUser } from "./lib/user";
-import { createChannel, Channel } from "./lib/channel";
-import { MessageCategory, ProtocolMessage } from "backchannel-common";
+import { parseMessage } from "./lib/protocol-message";
 
 const app = express();
+
+const origin = process.env.WEB_APP_ORIGIN || "http://localhost:3000";
+app.use(cors({ origin }));
+logger.info(`Allowing CORS requests from ${origin}`);
+
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const channels = new Map<string, Channel>();
-const rootChannel = createChannel("root");
-channels.set(rootChannel.id, rootChannel);
+const channelController = createController();
 
 const healthCheck = () => Promise.resolve(true);
 
-app.get("/ping", (res, resp) => {
+app.get("/ping", (_, resp) => {
   healthCheck().then(() => resp.sendStatus(200));
 });
 
+app.get("/stats", (_, resp) => resp.send(channelController.stats()));
+
+app.post("/channels", (_, resp) => {
+  if (channelController.hasCapacity()) {
+    const channel = channelController.create();
+    logger.info(`Channel ${channel.id} created.`);
+    resp.status(201);
+    resp.send({ channelId: channel.id });
+  } else {
+    logger.warn(`Channel creation request denied due to capacity exceeded`);
+    resp.sendStatus(503);
+  }
+});
+
 wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
-  const shouldBroadcast = (msg: ProtocolMessage): boolean => true;
-  const channel = channels.get(rootChannel.id);
-  const user = generateUser();
   const { socket } = request;
-  logger.info(
-    `${user.name} joined from ${socket.remoteAddress}/${socket.remotePort}`
-  );
-  channel.register(user, ws);
+  logger.debug(`Connection from ${socket.remoteAddress}/${socket.remotePort}`);
 
-  channel.sendToUser(user, buildMessage(MessageCategory.IdentityGranted, user));
+  const firstMessageListener = (event) => {
+    ws.removeEventListener("message", firstMessageListener);
 
-  channel.getMembers().forEach((u) => {
-    channel.sendToUser(user, buildMessage(MessageCategory.JoinedChannel, u));
-  });
-  channel.history.forEach((msg) => channel.sendToUser(user, msg));
-
-  ws.onmessage = (event: WebSocket.MessageEvent): void => {
-    const data = event.data as string;
-    logger.debug(`rcvd from ${user.name} => ${data}`);
-    const protoMsg = JSON.parse(data) as ProtocolMessage;
-    if (shouldBroadcast(protoMsg)) {
-      channel.broadcast(protoMsg);
+    const msg = parseMessage(event);
+    logger.debug(`First message received, ${JSON.stringify(msg)}`);
+    if (msg.category === MessageCategory.ConnectToChannel) {
+      const channelId = msg.payload;
+      logger.debug(`Connecting to ${channelId}`);
+      const channel = channelController.get(channelId);
+      if (channel) {
+        connectToChannel(channel, ws);
+      } else {
+        logger.warn(`No such channel ${channelId}. Disconnecting`);
+        setTimeout(() => ws.close(), Math.floor(Math.random() * 1000));
+      }
+    } else {
+      logger.error("Protocol error: initial message must be ConnectToChannel");
+      ws.close(-1, "Protocol error: initial message must be ConnectToChannel");
     }
   };
-
-  channel.broadcast(buildMessage(MessageCategory.JoinedChannel, user));
-  ws.on("close", () => {
-    channel.unregister(user);
-    channel.broadcast(buildMessage(MessageCategory.LeftChannel, user));
-  });
+  ws.addEventListener("message", firstMessageListener);
 });
 
 const port = process.env.PORT || 3001;
