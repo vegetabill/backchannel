@@ -29,5 +29,5 @@ export function sentenceWithVerb(
 }
 
 export function md5(s: string): string {
-  return crypto.createHash("md5").update(s).digest("base64");
+  return crypto.createHash("md5").update(s).digest("base64").substr(0, 8);
 }
