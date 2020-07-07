@@ -1,13 +1,12 @@
 // 3p
-import { MessageCategory } from "backchannel-common";
+import { apiRoutes } from "backchannel-common";
 import * as cors from "cors";
 import * as express from "express";
 import * as http from "http";
 import * as WebSocket from "ws";
-import { connectToChannel, createController } from "./lib/channel";
 // 1p
+import { assignSocketToChannel, createController } from "./lib/channel";
 import logger from "./lib/logger";
-import { parseMessage } from "./lib/protocol-message";
 
 const app = express();
 
@@ -28,7 +27,7 @@ app.get("/ping", (_, resp) => {
 
 app.get("/stats", (_, resp) => resp.send(channelController.stats()));
 
-app.post("/channels", (_, resp) => {
+app.post(apiRoutes.CHANNELS_RESOURCE.indexPath, (_, resp) => {
   if (channelController.hasCapacity()) {
     const channel = channelController.create();
     logger.info(`Channel ${channel.id} created.`);
@@ -42,29 +41,21 @@ app.post("/channels", (_, resp) => {
 
 wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
   const { socket } = request;
-  logger.debug(`Connection from ${socket.remoteAddress}/${socket.remotePort}`);
+  logger.debug(
+    `Connection to ${request.url} from ${socket.remoteAddress}:${socket.remotePort}`
+  );
+  const channelId = apiRoutes.CHANNEL_WEBSOCKET.matcher(request.url);
 
-  const firstMessageListener = (event) => {
-    ws.removeEventListener("message", firstMessageListener);
+  if (!channelId) {
+    logger.warn(`No such channel ${channelId}. Disconnecting`);
+    ws.close();
+    return;
+  }
 
-    const msg = parseMessage(event);
-    logger.debug(`First message received, ${JSON.stringify(msg)}`);
-    if (msg.category === MessageCategory.ConnectToChannel) {
-      const channelId = msg.payload;
-      logger.debug(`Connecting to ${channelId}`);
-      const channel = channelController.get(channelId);
-      if (channel) {
-        connectToChannel(channel, ws);
-      } else {
-        logger.warn(`No such channel ${channelId}. Disconnecting`);
-        setTimeout(() => ws.close(), Math.floor(Math.random() * 1000));
-      }
-    } else {
-      logger.error("Protocol error: initial message must be ConnectToChannel");
-      ws.close(-1, "Protocol error: initial message must be ConnectToChannel");
-    }
-  };
-  ws.addEventListener("message", firstMessageListener);
+  const channel = channelController.get(channelId);
+  assignSocketToChannel(channel, ws);
+
+  wss.on("error", (err) => logger.error(err));
 });
 
 const port = process.env.PORT || 3001;

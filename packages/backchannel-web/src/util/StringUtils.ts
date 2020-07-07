@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export function toSentence(items: Array<Object>): string {
   if (items.length === 0) {
     return "";
@@ -24,4 +26,8 @@ export function sentenceWithVerb(
     return toSentence(items) + " " + plural;
   }
   return toSentence(items) + " " + singular;
+}
+
+export function md5(s: string): string {
+  return crypto.createHash("md5").update(s).digest("base64");
 }

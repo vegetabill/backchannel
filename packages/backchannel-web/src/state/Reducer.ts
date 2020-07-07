@@ -3,7 +3,13 @@ import { uniqBy } from "lodash";
 import { AppAction, RemoteAction, ActionType } from "../model/Actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
 
+interface Channel {
+  id: string;
+  nickname: string;
+  send(msg: ProtocolMessage): void;
+}
 export interface AppState {
+  channel: Channel;
   members: Array<User>;
   messages: Array<ProtocolMessage>;
   user: User;
@@ -20,15 +26,19 @@ function isAppAction(action: AppAction | RemoteAction): action is AppAction {
   return (action as AppAction).type !== undefined;
 }
 
-let activeChannel = {
-  send(msg: ProtocolMessage) {
-    console.warn("Tried to send message before connected", msg);
+export const initialState = {
+  channel: {
+    id: "",
+    nickname: "",
+    send: (msg: ProtocolMessage) => {
+      console.warn("Attempt to send message before connected", msg);
+    },
   },
+  messages: [],
+  members: [],
+  outbox: [],
+  user: { name: "", id: "" },
 };
-
-export function registerChannel(channel: any) {
-  activeChannel = channel;
-}
 
 export default function reduce(
   state: AppState,
@@ -88,10 +98,15 @@ export default function reduce(
           payload,
           timestamp: new Date(),
         };
-        activeChannel.send(protoMsg);
+        state.channel.send(protoMsg);
         return {
           ...state,
           outbox: state.outbox.concat(protoMsg),
+        };
+      case ActionType.ChannelConnected:
+        return {
+          ...state,
+          channel: action.payload as Channel,
         };
       default:
         break;

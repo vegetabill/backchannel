@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from "react";
-import reducer, { registerChannel } from "../state/Reducer";
+import reducer, { initialState } from "../state/Reducer";
 import { Container } from "reactstrap";
 import AnyMessage from "../components/messages/AnyMessage";
 import ChatEditor from "../components/ChatEditor";
@@ -9,26 +9,12 @@ import Header from "../components/Header";
 import { groupMessages } from "../util/MessageGrouping";
 import { useParams } from "react-router-dom";
 
-const initialState = {
-  messages: [],
-  members: [],
-  outbox: [],
-  user: { name: "", id: "" },
-};
-
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-
   const { channelId } = useParams();
 
   useEffect(() => {
-    connectToChannel(
-      channelId,
-      process.env.REACT_APP_WS_ENDPOINT || "ws://localhost:3001"
-    ).then((channel) => {
-      channel.useDispatcher(dispatch);
-      registerChannel(channel);
-    });
+    connectToChannel(channelId, dispatch);
   }, [channelId]);
 
   const { messages, members, user, outbox } = state;

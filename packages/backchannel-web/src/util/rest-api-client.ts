@@ -1,3 +1,5 @@
+import { apiRoutes } from "backchannel-common";
+
 const REST_API_ENDPOINT =
   process.env.REACT_REST_API_ENDPOINT || "http://localhost:3001";
 
@@ -8,7 +10,7 @@ const defaultHeaders = {
 };
 
 function buildRemotePath(relativePath: string) {
-  return `${REST_API_ENDPOINT}/${relativePath}`;
+  return `${REST_API_ENDPOINT}${relativePath}`;
 }
 
 function jsonResponseHandler(resp: Response) {
@@ -44,5 +46,5 @@ function request(
 }
 
 export function createChannel() {
-  return request("channels", { method: "POST" });
+  return request(apiRoutes.CHANNELS_RESOURCE.indexPath, { method: "POST" });
 }

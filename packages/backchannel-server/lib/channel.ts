@@ -50,7 +50,7 @@ export function createController() {
   };
 }
 
-export function connectToChannel(channel: Channel, ws: WebSocket): void {
+export function assignSocketToChannel(channel: Channel, ws: WebSocket): void {
   const user = generateUser();
   channel.register(user, ws);
   channel.sendToUser(user, buildMessage(MessageCategory.IdentityGranted, user));

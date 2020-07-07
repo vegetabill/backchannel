@@ -1,4 +1,5 @@
 import React from "react";
+import { md5 } from "../../util/StringUtils";
 
 const GIPHY_REGEX = /\bhttps:\/\/media.giphy.com\/media\/\w+\/giphy\.gif\b/;
 
@@ -13,9 +14,16 @@ const ChatBody: React.FunctionComponent<{
     <p className="media-body__text">
       {lines.map((line) =>
         isMeme(line) ? (
-          <img alt="animated gif" src={line} className="media-body__meme" />
+          <img
+            key={md5(line)}
+            alt="animated gif"
+            src={line}
+            className="media-body__meme"
+          />
         ) : (
-          <span className="media-body__textLine">{line}</span>
+          <span key={md5(line)} className="media-body__textLine">
+            {line}
+          </span>
         )
       )}
     </p>

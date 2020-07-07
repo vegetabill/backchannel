@@ -10,7 +10,7 @@ export enum ActionType {
 
 export interface AppAction {
   type: ActionType;
-  payload: string;
+  payload: any;
 }
 
 export interface RemoteAction {
