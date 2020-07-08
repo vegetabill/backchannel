@@ -17,9 +17,9 @@ function App() {
 
   useEffect(() => connectToChannel(channelId, dispatch), [channelId]);
 
-  // if (channel === notFoundChannel) {
-  //   return <Redirect to={routes.NOT_FOUND.build()} />;
-  // }
+  if (channel === notFoundChannel) {
+    return <Redirect to={routes.NOT_FOUND.build()} />;
+  }
 
   const groupedMessages = groupMessages(messages);
 
