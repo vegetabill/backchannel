@@ -1,5 +1,5 @@
 // 3p
-import { apiRoutes } from "backchannel-common";
+import { apiRoutes, WsClosureCodes } from "backchannel-common";
 import * as cors from "cors";
 import * as express from "express";
 import * as http from "http";
@@ -40,23 +40,19 @@ app.post(apiRoutes.CHANNELS_RESOURCE.indexPath, (_, resp) => {
 });
 
 wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
-  const { socket } = request;
-  logger.debug(
-    `Connection to ${request.url} from ${socket.remoteAddress}:${socket.remotePort}`
-  );
-  const channelId = apiRoutes.CHANNEL_WEBSOCKET.matcher(request.url);
+  const { url } = request;
+  const channelId = apiRoutes.CHANNEL_WEBSOCKET.matcher(url);
+  const channel = channelId && channelController.get(channelId);
 
-  if (!channelId) {
+  if (!channel) {
     logger.warn(`No such channel ${channelId}. Disconnecting`);
-    ws.close();
-    return;
+    ws.close(WsClosureCodes.ChannelNotFound);
+  } else {
+    assignSocketToChannel(channel, ws);
   }
-
-  const channel = channelController.get(channelId);
-  assignSocketToChannel(channel, ws);
-
-  wss.on("error", (err) => logger.error(err));
 });
+
+wss.on("error", (err) => logger.error(err));
 
 const port = process.env.PORT || 3001;
 

@@ -5,7 +5,7 @@ import ChannelPage from "./pages/ChannelPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CreateChannelPage from "./pages/CreateChannelPage";
-import Routes from "./routes";
+import Routes from "./Routes";
 
 function App() {
   return (
@@ -19,6 +19,9 @@ function App() {
         </Route>
         <Route exact path={Routes.ROOT.pattern}>
           <HomePage />
+        </Route>
+        <Route path={Routes.NOT_FOUND.pattern}>
+          <NotFoundPage />
         </Route>
         <Route path="*">
           <NotFoundPage />

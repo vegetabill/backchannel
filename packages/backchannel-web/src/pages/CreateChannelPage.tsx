@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { ReactComponent as Spinner } from "../assets/loader.svg";
-import { createChannel } from "../util/rest-api-client";
-import Routes from "../routes";
+import { createChannel } from "../util/RestApiClient";
+import Routes from "../Routes";
 
 function CreateChannelPage() {
   const [channelId, setChannelId] = useState("");

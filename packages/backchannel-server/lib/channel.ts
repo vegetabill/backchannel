@@ -1,7 +1,12 @@
-import { User, ProtocolMessage, MessageCategory } from "backchannel-common";
+import {
+  User,
+  ProtocolMessage,
+  MessageCategory,
+  buildMessage,
+  parseMessage,
+} from "backchannel-common";
 import * as shortId from "shortid";
 import * as WebSocket from "ws";
-import { buildMessage, parseMessage } from "./protocol-message";
 import { generateUser } from "./user";
 import logger from "./logger";
 
@@ -21,7 +26,8 @@ const REPLAY_LIMIT = 5;
 const MAX_CHANNELS = parseInt(process.env.MAX_CHANNELS) || 8;
 
 const toWire = (msg: ProtocolMessage): string => JSON.stringify(msg);
-const getExpirationDate = () => new Date(Date.now() + 1000 * 60 * 15); //15 minutes
+const FIFTEEN_MINUTES = 1000 * 60 * 15;
+const getExpirationDate = () => new Date(Date.now() + FIFTEEN_MINUTES);
 const shouldBroadcast = (msg: ProtocolMessage): boolean => true;
 
 export function createController() {
@@ -41,9 +47,10 @@ export function createController() {
   };
 
   const get = (id: string) => channels.get(id);
+  const hasCapacity = (): boolean => channels.size < MAX_CHANNELS;
 
   return {
-    hasCapacity: () => channels.size < MAX_CHANNELS,
+    hasCapacity,
     stats,
     create,
     get,

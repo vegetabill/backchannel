@@ -6,6 +6,8 @@ import { MessageCategory, ProtocolMessage } from "backchannel-common";
 export enum ActionType {
   SentChat = "SENT_CHAT",
   ChannelConnected = "CHANNEL_CONNECTED",
+  ChannelDisconnected = "CHANNEL_DISCONNECTED",
+  ChannelNotFound = "CHANNEL_NOT_FOUND",
 }
 
 export interface AppAction {

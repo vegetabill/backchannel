@@ -2,12 +2,8 @@ import shortId from "shortid";
 import { uniqBy } from "lodash";
 import { AppAction, RemoteAction, ActionType } from "../model/Actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
+import { Channel, notFoundChannel } from "../model/Channel";
 
-interface Channel {
-  id: string;
-  nickname: string;
-  send(msg: ProtocolMessage): void;
-}
 export interface AppState {
   channel: Channel;
   members: Array<User>;
@@ -26,14 +22,16 @@ function isAppAction(action: AppAction | RemoteAction): action is AppAction {
   return (action as AppAction).type !== undefined;
 }
 
-export const initialState = {
-  channel: {
-    id: "",
-    nickname: "",
-    send: (msg: ProtocolMessage) => {
-      console.warn("Attempt to send message before connected", msg);
-    },
+const preconnectedChannel: Channel = {
+  id: "",
+  nickname: "",
+  send: (msg: ProtocolMessage) => {
+    console.warn("Attempt to send message before connected", msg);
   },
+};
+
+export const initialState = {
+  channel: preconnectedChannel,
   messages: [],
   members: [],
   outbox: [],
@@ -107,6 +105,11 @@ export default function reduce(
         return {
           ...state,
           channel: action.payload as Channel,
+        };
+      case ActionType.ChannelNotFound:
+        return {
+          ...state,
+          channel: notFoundChannel,
         };
       default:
         break;

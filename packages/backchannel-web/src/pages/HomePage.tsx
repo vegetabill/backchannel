@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Jumbotron } from "reactstrap";
-import Routes from "../routes";
+import Routes from "../Routes";
 
 function HomePage() {
   return (

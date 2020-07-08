@@ -11,4 +11,8 @@ export default {
     pattern: "/channels/:channelId",
     build: (channelId: string) => `/channels/${channelId}`,
   },
+  NOT_FOUND: {
+    pattern: "/not-found",
+    build: () => `/not-found`,
+  },
 };

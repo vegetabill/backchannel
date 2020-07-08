@@ -3,27 +3,29 @@ import reducer, { initialState } from "../state/Reducer";
 import { Container } from "reactstrap";
 import AnyMessage from "../components/messages/AnyMessage";
 import ChatEditor from "../components/ChatEditor";
-import { connectToChannel } from "../model/Channel";
+import { connectToChannel, notFoundChannel } from "../model/Channel";
 import { Provider } from "../state/Context";
 import Header from "../components/Header";
 import { groupMessages } from "../util/MessageGrouping";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
+import routes from "../Routes";
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { channelId } = useParams();
+  const { messages, members, user, outbox, channel } = state;
 
-  useEffect(() => {
-    connectToChannel(channelId, dispatch);
-  }, [channelId]);
+  useEffect(() => connectToChannel(channelId, dispatch), [channelId]);
 
-  const { messages, members, user, outbox } = state;
+  // if (channel === notFoundChannel) {
+  //   return <Redirect to={routes.NOT_FOUND.build()} />;
+  // }
 
   const groupedMessages = groupMessages(messages);
 
   return (
     <Provider value={{ state, dispatch }}>
-      <Header user={user} members={members} room={channelId} />
+      <Header user={user} members={members} channel={channel} />
       <main>
         <Container>
           {groupedMessages.map((msg) => (

@@ -3,12 +3,13 @@ import Avatar from "./Avatar";
 import { Spinner } from "reactstrap";
 import { User } from "backchannel-common";
 import { Container, Row, Col } from "reactstrap";
+import { Channel } from "../model/Channel";
 
 const Header: React.FunctionComponent<{
   user: User;
   members: Array<User>;
-  room: string;
-}> = ({ user, members, room }) => {
+  channel: Channel;
+}> = ({ user, members, channel }) => {
   return (
     <header>
       <Container>
@@ -20,7 +21,7 @@ const Header: React.FunctionComponent<{
               ) : (
                 <Spinner color="info" />
               )}
-              {user.name} / #{room}
+              {user.name} / #{channel.id}
             </h2>
           </Col>
 
