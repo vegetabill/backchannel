@@ -7,7 +7,7 @@ import { connectToChannel, ConnectionStatus } from "../model/Channel";
 import { Provider } from "../state/Context";
 import Header from "../components/Header";
 import { groupMessages } from "../util/MessageGrouping";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import Footer from "../components/Footer";
 
 const isReadonly = (status: ConnectionStatus): boolean =>
@@ -16,11 +16,15 @@ const isReadonly = (status: ConnectionStatus): boolean =>
   );
 
 function App() {
+  const history = useHistory();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { channelId } = useParams();
   const { connectionStatus, messages, members, user, outbox, channel } = state;
 
-  useEffect(() => connectToChannel(channelId, dispatch), [channelId]);
+  useEffect(() => connectToChannel(channelId, dispatch, history), [
+    channelId,
+    history,
+  ]);
 
   const readOnly = isReadonly(connectionStatus);
   const groupedMessages = groupMessages(messages);

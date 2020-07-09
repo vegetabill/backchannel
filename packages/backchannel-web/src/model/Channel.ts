@@ -6,6 +6,7 @@ import {
   ProtocolMessage,
   buildMessage,
 } from "backchannel-common";
+import routes from "../Routes";
 
 const ENDPOINT_ROOT =
   process.env.REACT_APP_WS_ENDPOINT || "ws://localhost:3001";
@@ -26,7 +27,8 @@ export enum ConnectionStatus {
 
 export function connectToChannel(
   channelId: string,
-  dispatch: Function
+  dispatch: Function,
+  history: any
 ): () => void | undefined {
   const channelPath = apiRoutes.CHANNEL_WEBSOCKET.build(channelId);
   const ws = new WebSocket(`${ENDPOINT_ROOT}${channelPath}`);
@@ -51,10 +53,7 @@ export function connectToChannel(
   function onClose(closeEvent: CloseEvent) {
     console.log(`channel[${channelId}] disconnected from channel `);
     if (closeEvent.code === WsClosureCode.ChannelNotFound) {
-      dispatch({
-        type: ActionType.ChannelNotFound,
-        payload: channelId,
-      });
+      history.push(routes.NOT_FOUND.build());
     } else if (closeEvent.code === WsClosureCode.ChannelExpired) {
       dispatch({
         type: ActionType.ChannelClosed,

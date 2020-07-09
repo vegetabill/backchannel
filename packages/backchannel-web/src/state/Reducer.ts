@@ -3,6 +3,7 @@ import { uniqBy } from "lodash";
 import { AppAction, RemoteAction, ActionType } from "../model/Actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
 import { Channel, ConnectionStatus } from "../model/Channel";
+import routes from "../Routes";
 
 export interface AppState {
   connectionStatus: ConnectionStatus;
@@ -121,6 +122,7 @@ export default function reduce(
           connectionStatus: ConnectionStatus.UnexpectedDisconnect,
         };
       case ActionType.ChannelNotFound:
+        window.history.pushState({}, "Not found", routes.NOT_FOUND.build());
         return {
           ...state,
           connectionStatus: ConnectionStatus.Closed,
