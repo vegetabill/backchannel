@@ -24,12 +24,25 @@ export interface Channel {
   close(code: WsClosureCode): void;
 }
 
-const REPLAY_LIMIT = 5;
-const MAX_CHANNELS = parseInt(process.env.MAX_CHANNELS) || 8;
+const intConfig = (name: string, defaultValue: number): number => {
+  const strVal = process.env[name];
+  if (strVal) {
+    const value = parseInt(strVal);
+    logger.info(`Config override: ${name}=${value}`);
+    return value;
+  }
+  return defaultValue;
+};
+
+const REPLAY_LIMIT = intConfig("REPLA_LIMIT", 5);
+const MAX_CHANNELS = intConfig("MAX_CHANNELS", 8);
 
 const toWire = (msg: ProtocolMessage): string => JSON.stringify(msg);
-const WARNING_TIME_SEC = 300;
-const CHANNEL_LIFETIME_SEC = 90 * 60;
+const EXPIRATION_WARNING_TIME_SEC = intConfig(
+  "EXPIRATION_WARNING_TIME_SEC",
+  300
+);
+const CHANNEL_LIFETIME_SEC = intConfig("CHANNEL_LIFETIME_SEC", 90 * 60);
 const getExpirationDate = () =>
   new Date(Date.now() + CHANNEL_LIFETIME_SEC * 1000);
 const shouldBroadcast = (msg: ProtocolMessage): boolean => true;
@@ -46,7 +59,9 @@ export function createController() {
 
   const createReaper = (channel: Channel) => {
     const millisUntilWarning =
-      channel.expiresAt.getTime() - Date.now() - WARNING_TIME_SEC * 1000;
+      channel.expiresAt.getTime() -
+      Date.now() -
+      EXPIRATION_WARNING_TIME_SEC * 1000;
     logger.debug(
       `Channel ${channel.id} will expire in ${
         CHANNEL_LIFETIME_SEC / 60
@@ -54,20 +69,22 @@ export function createController() {
     );
     setTimeout(() => {
       logger.info(
-        `Channel ${channel.id} will expire in ${WARNING_TIME_SEC / 60} minutes`
+        `Channel ${channel.id} will expire in ${
+          EXPIRATION_WARNING_TIME_SEC / 60
+        } minutes`
       );
       channel.broadcast(
         buildMessage(
           MessageCategory.ChannelExpirationWarning,
           null,
-          `Channel expiring in ${WARNING_TIME_SEC / 60} minutes.`
+          `Channel expiring in ${EXPIRATION_WARNING_TIME_SEC / 60} minutes.`
         )
       );
       setTimeout(() => {
         channel.broadcast(buildMessage(MessageCategory.ChannelClosed));
         channel.close(WsClosureCode.ChannelExpired);
         channels.delete(channel.id);
-      }, WARNING_TIME_SEC * 1000);
+      }, EXPIRATION_WARNING_TIME_SEC * 1000);
     }, millisUntilWarning);
   };
 
@@ -183,7 +200,7 @@ export function createChannel(): Channel {
   }
 
   function close(code: WsClosureCode) {
-    logger.info(`Channel ${id} closing`);
+    logger.info(`Channel ${id} closing with code ${code}`);
     [...connections.values()].forEach((ws) => ws.close(code));
     connections.clear();
   }

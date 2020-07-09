@@ -2,7 +2,7 @@ import shortId from "shortid";
 import { uniqBy } from "lodash";
 import { AppAction, RemoteAction, ActionType } from "../model/Actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
-import { Channel, notFoundChannel, ConnectionStatus } from "../model/Channel";
+import { Channel, ConnectionStatus } from "../model/Channel";
 
 export interface AppState {
   connectionStatus: ConnectionStatus;
@@ -124,7 +124,6 @@ export default function reduce(
         return {
           ...state,
           connectionStatus: ConnectionStatus.Closed,
-          channel: notFoundChannel,
         };
       case ActionType.ChannelClosed:
         return {

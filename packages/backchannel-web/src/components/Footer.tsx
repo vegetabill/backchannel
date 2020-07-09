@@ -11,7 +11,11 @@ const Footer: React.FunctionComponent<{
         </section>
         <section className="footerSection">
           <a href="https://github.com/vegetabill/backchannel/issues">
-            we 🖤 feedback
+            We{" "}
+            <span role="img" aria-label="black heart">
+              🖤
+            </span>{" "}
+            feedback.
           </a>
         </section>
 

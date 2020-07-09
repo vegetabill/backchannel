@@ -12,7 +12,12 @@ const DisconnectedHeader = () => (
     <Container>
       <Row>
         <Col>
-          <h2>⛔ Connection Lost</h2>
+          <h2>
+            <span role="img" aria-label="no entry sign">
+              ⛔
+            </span>{" "}
+            Connection Lost
+          </h2>
           <a href="#reload" onClick={() => window.location.reload()}>
             Retry Connection
           </a>

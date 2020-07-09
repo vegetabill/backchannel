@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev:start": "node -r ts-node/register index.ts",
-    "dev": "VERBOSE=true nodemon --scripts-prepend-node-path",
+    "dev": "VERBOSE=true CHANNEL_LIFETIME_SEC=60 EXPIRATION_WARNING_TIME_SEC=30 nodemon --scripts-prepend-node-path",
     "build": "tsc",
     "start": "node dist/index.js",
     "docker": "npm run build && docker build ."
