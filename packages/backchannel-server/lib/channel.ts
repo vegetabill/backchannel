@@ -4,6 +4,7 @@ import {
   MessageCategory,
   buildMessage,
   parseMessage,
+  WsClosureCode,
 } from "backchannel-common";
 import * as shortId from "shortid";
 import * as WebSocket from "ws";
@@ -20,14 +21,17 @@ export interface Channel {
   register(user: User, socket: WebSocket): void;
   unregister(user: User): void;
   getMembers(): Array<User>;
+  close(code: WsClosureCode): void;
 }
 
 const REPLAY_LIMIT = 5;
 const MAX_CHANNELS = parseInt(process.env.MAX_CHANNELS) || 8;
 
 const toWire = (msg: ProtocolMessage): string => JSON.stringify(msg);
-const FIFTEEN_MINUTES = 1000 * 60 * 15;
-const getExpirationDate = () => new Date(Date.now() + FIFTEEN_MINUTES);
+const WARNING_TIME_SEC = 300;
+const CHANNEL_LIFETIME_SEC = 90 * 60;
+const getExpirationDate = () =>
+  new Date(Date.now() + CHANNEL_LIFETIME_SEC * 1000);
 const shouldBroadcast = (msg: ProtocolMessage): boolean => true;
 
 export function createController() {
@@ -40,14 +44,55 @@ export function createController() {
     };
   };
 
+  const createReaper = (channel: Channel) => {
+    const millisUntilWarning =
+      channel.expiresAt.getTime() - Date.now() - WARNING_TIME_SEC * 1000;
+    logger.debug(
+      `Channel ${channel.id} will expire in ${
+        CHANNEL_LIFETIME_SEC / 60
+      } minutes`
+    );
+    setTimeout(() => {
+      logger.info(
+        `Channel ${channel.id} will expire in ${WARNING_TIME_SEC / 60} minutes`
+      );
+      channel.broadcast(
+        buildMessage(
+          MessageCategory.ChannelExpirationWarning,
+          null,
+          `Channel expiring in ${WARNING_TIME_SEC / 60} minutes.`
+        )
+      );
+      setTimeout(() => {
+        channel.broadcast(buildMessage(MessageCategory.ChannelClosed));
+        channel.close(WsClosureCode.ChannelExpired);
+        channels.delete(channel.id);
+      }, WARNING_TIME_SEC * 1000);
+    }, millisUntilWarning);
+  };
+
   const create = (): Channel => {
     const channel = createChannel();
     channels.set(channel.id, channel);
+    createReaper(channel);
     return channel;
   };
 
   const get = (id: string) => channels.get(id);
-  const hasCapacity = (): boolean => channels.size < MAX_CHANNELS;
+
+  const hasCapacity = (): boolean => {
+    const emptyChannels = [...channels.values()].filter(
+      (c) => c.getMembers().length === 0
+    );
+    if (emptyChannels.length > 0) {
+      logger.info(`Reaping empty channels: ${emptyChannels.join(", ")}`);
+      emptyChannels.forEach((c) => {
+        channels.delete(c.id);
+        c.close(WsClosureCode.ChannelInactivity);
+      });
+    }
+    return channels.size < MAX_CHANNELS;
+  };
 
   return {
     hasCapacity,
@@ -114,7 +159,7 @@ export function createChannel(): Channel {
       recipientConn.send(toWire(msg));
     } else {
       logger.warn(
-        `unable to send to ${recipient.name}. maybe they disconnected`
+        `unable to send to ${recipient.id} / ${recipient.name}. maybe they disconnected`
       );
     }
   }
@@ -125,12 +170,22 @@ export function createChannel(): Channel {
     }
     const msgStr = toWire(msg);
     connections.forEach((ws) => {
-      ws.send(msgStr);
+      try {
+        ws.send(msgStr);
+      } catch {
+        logger.warn(`Error broadcasting msg: ${msgStr}`);
+      }
     });
   }
 
   function getMembers() {
     return [...connections.keys()];
+  }
+
+  function close(code: WsClosureCode) {
+    logger.info(`Channel ${id} closing`);
+    [...connections.values()].forEach((ws) => ws.close(code));
+    connections.clear();
   }
 
   return {
@@ -143,5 +198,6 @@ export function createChannel(): Channel {
     register,
     unregister,
     getMembers,
+    close,
   };
 }

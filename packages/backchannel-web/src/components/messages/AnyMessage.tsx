@@ -1,6 +1,7 @@
 import React from "react";
 import { Alert } from "reactstrap";
 import Chat from "./Chat";
+import ChannelExpirationWarning from "./ChannelExpirationWarning";
 import MembershipChange, { ChangeType } from "./MembershipChange";
 import { ProtocolMessage, MessageCategory } from "backchannel-common";
 import {
@@ -48,6 +49,8 @@ const Activity: React.FunctionComponent<{
         return <MembershipChange members={[actor]} type={ChangeType.Join} />;
       case MessageCategory.LeftChannel:
         return <MembershipChange members={[actor]} type={ChangeType.Left} />;
+      case MessageCategory.ChannelExpirationWarning:
+        return <ChannelExpirationWarning notice={payload} />;
       case MessageCategory.SentChat:
         return (
           <Chat

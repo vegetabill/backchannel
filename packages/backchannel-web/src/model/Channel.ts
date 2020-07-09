@@ -2,7 +2,7 @@ import { actionFromMessage, ActionType } from "./Actions";
 import {
   MessageCategory,
   apiRoutes,
-  WsClosureCodes,
+  WsClosureCode,
   ProtocolMessage,
   buildMessage,
 } from "backchannel-common";
@@ -16,17 +16,13 @@ export interface Channel {
   send(msg: ProtocolMessage): void;
 }
 
-export const disconnectedChannel: Channel = {
-  id: "",
-  nickname: "",
-  send: () => undefined,
-};
-
-export const notFoundChannel: Channel = {
-  id: "Not Found",
-  nickname: "",
-  send: () => undefined,
-};
+export enum ConnectionStatus {
+  NotYetConnected,
+  Connected,
+  UnexpectedDisconnect,
+  Expiring,
+  Closed,
+}
 
 export function connectToChannel(
   channelId: string,
@@ -53,17 +49,23 @@ export function connectToChannel(
   }
 
   function onClose(closeEvent: CloseEvent) {
-    console.log(`disconnected from channel ${channelId}`);
-    if (closeEvent.code === WsClosureCodes.ChannelNotFound) {
+    console.log(`channel[${channelId}] disconnected from channel `);
+    if (closeEvent.code === WsClosureCode.ChannelNotFound) {
       dispatch({
         type: ActionType.ChannelNotFound,
         payload: channelId,
       });
+    } else if (closeEvent.code === WsClosureCode.ChannelExpired) {
+      dispatch({
+        type: ActionType.ChannelClosed,
+        payload: channelId,
+      });
+    } else {
+      dispatch({
+        type: ActionType.ChannelDisconnected,
+        payload: channelId,
+      });
     }
-    dispatch({
-      type: ActionType.ChannelDisconnected,
-      payload: channelId,
-    });
   }
 
   function onError(err: Event) {
@@ -83,6 +85,9 @@ export function connectToChannel(
   ws.addEventListener("message", onMessage);
 
   function unsubscribeAll() {
+    console.debug(
+      `[channel]${channelId}] Unregistering event listeners from WS`
+    );
     ws.removeEventListener("open", onOpen);
     ws.removeEventListener("close", onClose);
     ws.removeEventListener("error", onError);

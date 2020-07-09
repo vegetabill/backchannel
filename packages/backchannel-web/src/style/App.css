@@ -2,6 +2,10 @@
   color: gray;
 }
 
+main.channel--readonly .avatar {
+  filter: grayscale();
+}
+
 .avatar--large {
   background-color: #fff;
   border-radius: 75px;
@@ -41,6 +45,12 @@
   margin-right: 0.5em;
 }
 
+main.channel--readonly .media-heading,
+main.channel--readonly .chatTimestamp {
+  color: #ccc;
+  border-color: #ccc;
+}
+
 .media-heading {
   font-size: medium;
   color: #b9ff66;
@@ -69,4 +79,33 @@
   margin-left: 1em;
   padding: 0.25em;
   font-size: small;
+}
+
+.expirationClock {
+  max-width: 5rem;
+}
+
+main {
+  background-color: #5b7c99;
+}
+
+.header--disconnected {
+  background-color: #666;
+}
+
+.header--disconnected a {
+  color: #b9ff66;
+}
+
+.channel--readonly {
+  background-color: #111;
+}
+
+main.channel--readonly .alert {
+  background-color: #ccc;
+  color: #000;
+}
+
+main.channel--readonly img {
+  filter: grayscale(100%);
 }

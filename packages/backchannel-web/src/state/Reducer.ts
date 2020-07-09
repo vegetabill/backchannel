@@ -2,9 +2,10 @@ import shortId from "shortid";
 import { uniqBy } from "lodash";
 import { AppAction, RemoteAction, ActionType } from "../model/Actions";
 import { ProtocolMessage, User, MessageCategory } from "backchannel-common";
-import { Channel, notFoundChannel } from "../model/Channel";
+import { Channel, notFoundChannel, ConnectionStatus } from "../model/Channel";
 
 export interface AppState {
+  connectionStatus: ConnectionStatus;
   channel: Channel;
   members: Array<User>;
   messages: Array<ProtocolMessage>;
@@ -30,7 +31,8 @@ const preconnectedChannel: Channel = {
   },
 };
 
-export const initialState = {
+export const initialState: AppState = {
+  connectionStatus: ConnectionStatus.NotYetConnected,
   channel: preconnectedChannel,
   messages: [],
   members: [],
@@ -82,6 +84,12 @@ export default function reduce(
           messages,
           members: remainingMembers,
         };
+      case MessageCategory.ChannelExpirationWarning:
+        return {
+          ...state,
+          connectionStatus: ConnectionStatus.Expiring,
+          messages,
+        };
       default:
         break;
     }
@@ -104,12 +112,24 @@ export default function reduce(
       case ActionType.ChannelConnected:
         return {
           ...state,
+          connectionStatus: ConnectionStatus.Connected,
           channel: action.payload as Channel,
+        };
+      case ActionType.ChannelDisconnected:
+        return {
+          ...state,
+          connectionStatus: ConnectionStatus.UnexpectedDisconnect,
         };
       case ActionType.ChannelNotFound:
         return {
           ...state,
+          connectionStatus: ConnectionStatus.Closed,
           channel: notFoundChannel,
+        };
+      case ActionType.ChannelClosed:
+        return {
+          ...state,
+          connectionStatus: ConnectionStatus.Closed,
         };
       default:
         break;

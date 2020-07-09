@@ -1,5 +1,5 @@
 // 3p
-import { apiRoutes, WsClosureCodes } from "backchannel-common";
+import { apiRoutes, WsClosureCode } from "backchannel-common";
 import * as cors from "cors";
 import * as express from "express";
 import * as http from "http";
@@ -46,7 +46,7 @@ wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
 
   if (!channel) {
     logger.warn(`No such channel ${channelId}. Disconnecting`);
-    ws.close(WsClosureCodes.ChannelNotFound);
+    ws.close(WsClosureCode.ChannelNotFound);
   } else {
     assignSocketToChannel(channel, ws);
   }

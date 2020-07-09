@@ -28,6 +28,8 @@ export interface ProtocolMessage {
   timestamp: Date;
 }
 
-export enum WsClosureCodes {
+export enum WsClosureCode {
   ChannelNotFound = 4004,
+  ChannelExpired = 4005,
+  ChannelInactivity = 4006,
 }

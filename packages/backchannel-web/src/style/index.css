@@ -13,6 +13,32 @@ footer {
   background-color: #b9ff66;
 }
 
+footer a {
+  color: #111;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+footer section {
+  color: #666;
+
+  display: inline-block;
+  align-self: center;
+}
+
+footer .footerSection--secondary {
+  font-size: small;
+}
+
+footer .footerSection--secondary a {
+  color: #000;
+}
+
 h1,
 h2,
 h3,
@@ -35,7 +61,7 @@ main.landing {
 }
 
 .landing .jumbotron {
-  background-color: #e9ecef96;
+  background-color: #e9ecefcc;
   padding: 3rem;
 }
 

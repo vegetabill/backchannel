@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Jumbotron } from "reactstrap";
 import Routes from "../Routes";
+import Footer from "../components/Footer";
 
 function HomePage() {
   return (
@@ -39,8 +40,8 @@ function HomePage() {
           </form>
         </Jumbotron>
       </main>
-      <footer>
-        <span>
+      <Footer>
+        <>
           Photo by{" "}
           <a href="https://unsplash.com/@kate_sade?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
             kate.sade
@@ -49,8 +50,8 @@ function HomePage() {
           <a href="https://unsplash.com/s/photos/office?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
             Unsplash
           </a>
-        </span>
-      </footer>
+        </>
+      </Footer>
     </>
   );
 }

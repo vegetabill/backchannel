@@ -8,6 +8,7 @@ export enum ActionType {
   ChannelConnected = "CHANNEL_CONNECTED",
   ChannelDisconnected = "CHANNEL_DISCONNECTED",
   ChannelNotFound = "CHANNEL_NOT_FOUND",
+  ChannelClosed = "CHANNEL_CLOSED",
 }
 
 export interface AppAction {

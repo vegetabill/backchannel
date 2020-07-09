@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import img404 from "../assets/randy-laybourne-uXJ1dgzYeRA-unsplash.jpg";
+import Footer from "../components/Footer";
 
 function NotFoundPage() {
   return (
@@ -14,8 +15,8 @@ function NotFoundPage() {
       <main>
         <img src={img404} alt="lost dog" />
       </main>
-      <footer>
-        <span>
+      <Footer>
+        <>
           Photo by{" "}
           <a href="https://unsplash.com/@randylaybourne?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
             Randy Laybourne
@@ -24,8 +25,8 @@ function NotFoundPage() {
           <a href="https://unsplash.com/s/photos/lost?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
             Unsplash
           </a>
-        </span>
-      </footer>
+        </>
+      </Footer>
     </>
   );
 }
