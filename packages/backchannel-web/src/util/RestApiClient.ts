@@ -1,7 +1,7 @@
 import { apiRoutes } from "backchannel-common";
 
 const REST_API_ENDPOINT =
-  process.env.REACT_REST_API_ENDPOINT || "http://localhost:3001";
+  process.env.REACT_APP_REST_API_ENDPOINT || "http://localhost:3001";
 
 const defaultOptions = {};
 const defaultHeaders = {

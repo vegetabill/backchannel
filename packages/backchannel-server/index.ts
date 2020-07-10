@@ -8,6 +8,8 @@ import * as WebSocket from "ws";
 import { assignSocketToChannel, createController } from "./lib/channel";
 import logger from "./lib/logger";
 
+const startTime = Date.now();
+
 const app = express();
 
 const origin = process.env.WEB_APP_ORIGIN || "http://localhost:3000";
@@ -25,7 +27,12 @@ app.get("/ping", (_, resp) => {
   healthCheck().then(() => resp.sendStatus(200));
 });
 
-app.get("/stats", (_, resp) => resp.send(channelController.stats()));
+app.get("/stats", (_, resp) =>
+  resp.send({
+    uptime: Date.now() - startTime,
+    ...channelController.stats(),
+  })
+);
 
 app.post(apiRoutes.CHANNELS_RESOURCE.indexPath, (_, resp) => {
   if (channelController.hasCapacity()) {
