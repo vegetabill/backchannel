@@ -2270,10 +2270,12 @@ babylon@^6.18.0:
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   integrity sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==
 
-backchannel-common@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/backchannel-common/-/backchannel-common-1.0.2.tgz#e18880e2aca4e76f039c721a0b306680eeb7994d"
-  integrity sha512-RF9uAd1L8wwksQZ+NeoTBrGxMVqcOKB0D9GDhzhrCa4I3Wlr8H3wn/MNa1fcKQc38vNdpM48PRAbOlChoeaO4Q==
+backchannel-common@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/backchannel-common/-/backchannel-common-1.0.3.tgz#36110c4a5b71b935a34adadcf5b6b79dbc374c92"
+  integrity sha512-3C2e3qKvplabxvt1NgH0g4EBoclgLJMw7G5cf5OarQ+xjqXCCfiZ9O6RSAuau+7ZnkSwejPoLT3hpB+pSJOAuQ==
+  dependencies:
+    shortid "^2.2.15"
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -6463,9 +6465,9 @@ lodash.uniq@^4.5.0:
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
 "lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+  version "4.17.19"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
+  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
 
 loglevel@^1.6.6:
   version "1.6.7"
