@@ -10,7 +10,12 @@ const Footer: React.FunctionComponent<{
           open-source from <a href="https://29poms.com">29poms</a>
         </section>
         <section className="footerSection">
-          <a href="https://github.com/vegetabill/backchannel/issues">
+          <a
+            title={`mention version: ${
+              process.env.REACT_APP_VERSION || "Alpha"
+            }`}
+            href="https://github.com/vegetabill/backchannel/issues"
+          >
             We{" "}
             <span role="img" aria-label="black heart">
               🖤

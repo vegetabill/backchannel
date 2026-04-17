@@ -76,6 +76,7 @@ main.channel--readonly .chatTimestamp {
   border: 2px solid #b9ff66;
   background-color: transparent;
   border-radius: 0.5em;
+  border-bottom: 0;
   margin-left: 1em;
   padding: 0.25em;
   font-size: small;
@@ -108,4 +109,14 @@ main.channel--readonly .alert {
 
 main.channel--readonly img {
   filter: grayscale(100%);
+}
+
+#applicationVersion {
+  display: none;
+}
+
+.membershipChange {
+  color: white;
+  background-color: #333;
+  margin: 0 0 1em 1em;
 }

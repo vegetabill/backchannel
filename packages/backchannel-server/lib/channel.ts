@@ -21,6 +21,7 @@ export interface Channel {
   register(user: User, socket: WebSocket): void;
   unregister(user: User): void;
   getMembers(): Array<User>;
+  isFull(): boolean;
   close(code: WsClosureCode): void;
 }
 
@@ -34,15 +35,18 @@ const intConfig = (name: string, defaultValue: number): number => {
   return defaultValue;
 };
 
-const REPLAY_LIMIT = intConfig("REPLA_LIMIT", 5);
+const DEFAULT_CHANNEL_LIFETIME = 900 // sec = 15min
+const REPLAY_LIMIT = intConfig("REPLAY_LIMIT", 5);
 const MAX_CHANNELS = intConfig("MAX_CHANNELS", 8);
-
-const toWire = (msg: ProtocolMessage): string => JSON.stringify(msg);
+const MAX_MEMBERS = intConfig("MAX_MEMBERS", 16);
+const CHANNEL_LIFETIME_SEC = intConfig("CHANNEL_LIFETIME_SEC", DEFAULT_CHANNEL_LIFETIME);
 const EXPIRATION_WARNING_TIME_SEC = intConfig(
   "EXPIRATION_WARNING_TIME_SEC",
   300
 );
-const CHANNEL_LIFETIME_SEC = intConfig("CHANNEL_LIFETIME_SEC", 90 * 60);
+
+const toWire = (msg: ProtocolMessage): string => JSON.stringify(msg);
+
 const getExpirationDate = () =>
   new Date(Date.now() + CHANNEL_LIFETIME_SEC * 1000);
 const shouldBroadcast = (msg: ProtocolMessage): boolean => true;
@@ -205,11 +209,16 @@ export function createChannel(): Channel {
     connections.clear();
   }
 
+  function isFull(): boolean {
+    return connections.size >= MAX_MEMBERS;
+  }
+
   return {
     id,
     createdAt: new Date(),
     history,
     expiresAt: getExpirationDate(),
+    isFull,
     broadcast,
     sendToUser,
     register,

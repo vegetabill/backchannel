@@ -52,6 +52,9 @@ function HomePage() {
           </a>
         </>
       </Footer>
+      <small id="applicationVersion">
+        backchannel-web version: {process.env.REACT_APP_VERSION || "latest"}
+      </small>
     </>
   );
 }

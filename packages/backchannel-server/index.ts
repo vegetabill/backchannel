@@ -54,6 +54,9 @@ wss.on("connection", (ws: WebSocket, request: http.IncomingMessage) => {
   if (!channel) {
     logger.warn(`No such channel ${channelId}. Disconnecting`);
     ws.close(WsClosureCode.ChannelNotFound);
+  } else if (channel.isFull()) {
+    logger.warn(`Channel ${channelId} is full. Rejected join request.`);
+    ws.close(WsClosureCode.ChannelCapacityExceeded);
   } else {
     assignSocketToChannel(channel, ws);
   }

@@ -7,6 +7,7 @@ COPY tsconfig.json ./
 COPY yarn.lock ./
 RUN yarn install
 ENV REACT_APP_WS_ENDPOINT=wss://backchannel-server.herokuapp.com
+ENV REACT_APP_REST_API_ENDPOINT=https://backchannel-server.herokuapp.com
 RUN npm run build
 
 FROM nginx:stable-alpine
